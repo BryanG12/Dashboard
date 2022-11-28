@@ -7,7 +7,7 @@ import { AuthRouter } from '../auth/router/AuthRouter';
 
 export const AppRouter = () => {
 
-  const authStatus = 'not-authenticated';
+  const authStatus = 'authenticated';
 
   return (
     <Routes>
