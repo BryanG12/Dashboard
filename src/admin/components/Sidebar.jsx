@@ -10,10 +10,9 @@ export const Sidebar = () => {
   return (
     <>
       <div
-        className={`xl:h-[100vh] overflow-y-scroll fixed xl:static w-[80%] md:w-[40%] lg:w-[30%] xl:w-auto h-full top-0 bg-secondary-100 p-4 flex flex-col justify-between z-50 ${showMenu ? "left-0" : "-left-full"
-          } transition-all duration-1000 ease-in-out delay-75 `}
+        className={`xl:h-[100vh] overflow-y-scroll fixed xl:static w-[65%] md:w-[40%] lg:w-[30%] xl:w-auto h-full top-0 bg-secondary-100 p-4 flex flex-col justify-between z-50 ${showMenu ? "left-0" : "-left-full"
+          } transition-all`}
       >
-
         <div >
           <h1 className="text-center text-2xl font-bold text-white mb-10 " >
             Admin <span className="text-primary text-4xl" >.</span>

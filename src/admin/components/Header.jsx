@@ -8,7 +8,7 @@ import '@szhsin/react-menu/dist/transitions/slide.css';
 
 export const Header = () => {
   return (
-    <header className="h-[7vh] md:h-[10vh] border-b border-secondary-100 md:p-8 p-2 md:py-0 py-7  flex items-center justify-end ">
+    <header className="h-[7vh] md:h-[10vh] border-b border-secondary-100 md:p-8 p-2 md:py-1 py-7  xl:w-full flex items-center justify-end ">
       <nav className="flex items-center gap-2">
         <Menu menuButton={
           <MenuButton className="relative hover:bg-secondary-100 p-2 rounded-lg transition-colors " >
@@ -109,7 +109,7 @@ export const Header = () => {
         >
           <MenuItem className="p-0 hover:bg-transparent">
             <Link
-              to="/perfil"
+              to="account/profile"
               className="rounded-lg transition-colors text-gray-300 hover:bg-secondary-900 flex items-center gap-x-4 py-2 px-6 flex-1"
             >
               <img
