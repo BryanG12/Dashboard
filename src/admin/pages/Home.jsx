@@ -5,47 +5,44 @@ import { CardInfo } from '../components/CardInfo';
 import { Menu, MenuItem, MenuButton } from "@szhsin/react-menu";
 import "@szhsin/react-menu/dist/index.css";
 import "@szhsin/react-menu/dist/transitions/slide.css";
-import fetchUsers from '../assets/fetchUser';
+// import fetchUsers from '../assets/fetchUser';
 import { Table } from '../components/Table';
+import { defaultData } from '../assets/data';
 
 const Home = () => {
 
 
+
   const [isLoading, setIsLoading] = useState(false);
-  const [users, setUsers] = useState([]);
+  const [users, setUsers] = useState(defaultData);
   const [pageCount, setPageCount] = useState(0);
 
-  const fetchData = useCallback(async function (page) {
-    setIsLoading(true);
-    const json = await fetchUsers(page + 1);
-    setUsers(json.data);
-    setPageCount(json.total_pages);
-    setIsLoading(false);
-  }, []);
+  // const fetchData = useCallback(async function (page) {
+  //   setIsLoading(true);
+  //   const json = await fetchUsers(page + 1);
+  //   setUsers(json.data);
+  //   setPageCount(json.total_pages);
+  //   setIsLoading(false);
+  // }, []);
 
-  const columns = useMemo(
-    () => [
-      {
-        Header: "Id",
-        accessor: "id",
-      },
-      {
-        Header: "Nombre",
-        accessor: "first_name",
-        Cell: ({ value }) => <div className='w-24'>{value}</div>,
-
-      },
-      {
-        Header: "Apellido",
-        accessor: "last_name",
-        Cell: ({ value }) => <div className='w-20'>{value}</div>
-      },
-      {
-        Header: "Email",
-        accessor: "email",
-        Cell: ({ value }) => <strong className='w-24'>{value}</strong>
-      },
-    ], []);
+  const columns = useMemo(() => [
+    {
+      accessorKey: "name",
+      header: () => <span>Nombre</span>,
+    },
+    {
+      accessorKey: "lastName",
+      header: () => <span>Apellido</span>,
+    },
+    {
+      accessorKey: "age",
+      header: () => <span>Edad</span>,
+    },
+    {
+      accessorKey: "status",
+      header: () => <span>Estado</span>,
+    },
+  ]);
 
 
   return (
@@ -93,10 +90,10 @@ const Home = () => {
             <Table
               columns={columns}
               data={users}
-              fetchData={fetchData}
+              // fetchData={fetchData}
               pageCount={pageCount}
             />
-            {isLoading && <div>Cargando...</div>}
+            <div>{isLoading && <div>Cargando...</div>}</div>
 
           </div>
         </div>
