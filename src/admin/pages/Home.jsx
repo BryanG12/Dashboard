@@ -8,6 +8,7 @@ import "@szhsin/react-menu/dist/transitions/slide.css";
 // import fetchUsers from '../assets/fetchUser';
 import { Table } from '../components/Table';
 import { defaultData } from '../assets/data';
+import classNames from 'classnames';
 
 const Home = () => {
 
@@ -41,6 +42,18 @@ const Home = () => {
     {
       accessorKey: "status",
       header: () => <span>Estado</span>,
+      cell: info => {
+        return (
+          <span className={classNames({
+            'text-white px-2 rounded-full font-semibold': true,
+            'bg-red-500': 'Inactivo' === info.getValue(),
+            'bg-green-500': 'Activo' === info.getValue()
+          })}>
+            {info.getValue()}
+          </span>
+        )
+      }
+
     },
   ]);
 

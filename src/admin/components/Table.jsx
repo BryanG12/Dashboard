@@ -4,22 +4,92 @@ import {
   getCoreRowModel,
   flexRender,
   getPaginationRowModel,
+  getFilteredRowModel
 } from "@tanstack/react-table";
 
 import classNames from "classnames";
+import {
+  RiSearch2Line,
 
+} from "react-icons/ri";
+import { rankItem } from "@tanstack/match-sorter-utils";
+
+
+const fuzzyFilter = (row, columnId, value, addMeta) => {
+
+  const itemRank = rankItem(row.getValue(columnId), value);
+  addMeta({ itemRank });
+
+  return itemRank.passed;
+}
+
+const DebouncedInput = ({ value: keyWord, onChange, ...props }) => {
+
+  const [value, setValue] = useState(keyWord);
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      onChange(value);
+    }, 750);
+
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, [value]);
+
+
+
+  return (
+    <input
+      {...props}
+      value={value}
+      onChange={e => setValue(e.target.value)}
+    />
+  )
+}
 
 export const Table = ({ data, /*fetchData,*/ columns, pageCount: controlledPageCount, }) => {
 
+  const [numPagination, setNumPagination] = useState(0);
+
+
+  const [globalFilter, setGlobalFilter] = useState('');
+
+
+  const getStateTable = () => {
+    const totalRows = table.getFilteredRowModel().rows.length;
+    const pageSize = table.getState().pagination.pageSize;
+    const pageIndex = table.getState().pagination.pageIndex;
+    const rowsPerPage = table.getRowModel().rows.length;
+
+    const firstIndex = (pageIndex * pageSize) + 1;
+    const lastIndex = (pageIndex * pageSize) + rowsPerPage;
+
+    return {
+      totalRows,
+      firstIndex,
+      lastIndex
+    }
+  }
 
   const table = useReactTable({
     data,
     columns,
+    state: {
+      globalFilter
+    },
+    initialState: {
+      pagination: {
+        pageSize: 5
+      }
+    },
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+    globalFilterFn: fuzzyFilter
 
   });
-  const [numPagination, setNumPagination] = useState(0);
+
 
   const pages = [
     { value: numPagination },
@@ -49,6 +119,20 @@ export const Table = ({ data, /*fetchData,*/ columns, pageCount: controlledPageC
   return (
     <div className='bg-gray-700/30 p-4'>
       <div className="overflow-x-scroll scrollbar-track-slate-700 scrollbar-thin scrollbar-thumb-primary scrollbar-thumb-rounded-lg scrollbar-h-1 hover:scrollbar-h-2 rounded-sm">
+        <div className="my-2 text-right">
+          <div className="relative">
+
+            <RiSearch2Line className="absolute top-1/2 -translate-y-1/2 right-56 " />
+            <DebouncedInput
+              type="text"
+              value={globalFilter ?? ''}
+              onChange={value => setGlobalFilter(String(value))}
+              className="bg-secondary-900 outline-none py-2 pr-4 pl-10 rounded-lg placeholder:text-gray-500 "
+              placeholder="Buscar..."
+
+            />
+          </div>
+        </div>
         <table className='w-full mb-2 border-white border-[1px]' >
           <thead className=' bg-gray-500 border-b-2 border-gray-200'>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -161,9 +245,9 @@ export const Table = ({ data, /*fetchData,*/ columns, pageCount: controlledPageC
           </button>
         </div>
         <div className='text-gray-600 font-semibold'>
-          Mostrando de {Number(table.getRowModel().rows[0].id) + 1}&nbsp;
-          a {Number(table.getRowModel().rows[table.getRowModel().rows.length - 1].id) + 1}&nbsp;
-          del total de {data.length} registros
+          Mostrando de {getStateTable().firstIndex}&nbsp;
+          a {getStateTable().lastIndex}&nbsp;
+          del total de {getStateTable().totalRows} registros
         </div>
         {/* </div> */}
 
@@ -172,6 +256,7 @@ export const Table = ({ data, /*fetchData,*/ columns, pageCount: controlledPageC
           onChange={e => {
             table.setPageSize(Number(e.target.value))
           }}>
+          <option value="5">5 pág.</option>
           <option value="10">10 pág.</option>
           <option value="25">25 pág.</option>
           <option value="50">50 pág.</option>

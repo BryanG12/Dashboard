@@ -1086,8 +1086,8 @@ export const defaultData = [
     status: "Activo",
   },
   {
-    name: "Marcus",
-    lastName: "Lawos",
+    name: "Spike",
+    lastName: "Alfa",
     age: 18,
     status: "Activo",
   },
