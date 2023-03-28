@@ -1,9 +1,37 @@
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { RiEyeLine, RiEyeOffLine, RiLock2Line, RiMailLine } from 'react-icons/ri';
-import { useState } from 'react';
+import { useAuthStore, useForm } from '../../hooks';
+import { RiEyeLine, RiEyeOffLine, RiLock2Line, RiMailLine, RiUser3Line } from 'react-icons/ri';
+import Swal from 'sweetalert2';
+
+
+
+const loginForm = {
+  loginUser: 'root',
+  loginPassword: 'J3sucrist='
+}
 
 const Login = () => {
+
+
+  const { startLogin, errorMessage } = useAuthStore();
+
   const [showPassword, setShowPassword] = useState(false);
+
+  const { loginUser, loginPassword, onInputChange } = useForm(loginForm);
+
+  const loginSubmit = (event) => {
+    event.preventDefault();
+    startLogin({ User: loginUser, Password: loginPassword })
+  }
+
+  useEffect(() => {
+    if (errorMessage !== undefined) {
+      Swal.fire('Error en la autenticación', errorMessage, 'error')
+    }
+
+  }, [errorMessage]);
+
 
   return (
     <div className="p-5  ">
@@ -13,14 +41,17 @@ const Login = () => {
       <h1 className="text-6xl text-white font-medium mb-2 uppercase tracking-[5px] ">
         Inicia sesión<span className="text-cyan-500">.</span>
       </h1>
-      <form className="mt-8">
+      <form className="mt-8" onSubmit={loginSubmit}>
         <div className="relative max-w-lg mb-4">
-          <RiMailLine className="absolute top-1/2 -translate-y-1/2 left-2  " />
+          <RiUser3Line className="absolute top-1/2 -translate-y-1/2 left-2  " />
           <input
-            type="email"
+            type="text"
             autoComplete="off"
             className="w-full py-3 px-4 pl-8 pr-4 rounded-xl bg-[#343434] text-gray-100 group focus:outline-cyan-900 outline-none"
             placeholder="Usuario"
+            name="loginUser"
+            value={loginUser}
+            onChange={onInputChange}
           />
         </div>
         <div className="relative max-w-lg mb-4">
@@ -30,6 +61,9 @@ const Login = () => {
             autoComplete="off"
             className="w-full py-3 px-8 rounded-xl bg-[#343434] text-gray-100 group focus:outline-cyan-900 outline-none"
             placeholder="Contraseña"
+            name="loginPassword"
+            value={loginPassword}
+            onChange={onInputChange}
           />
           {showPassword
             ? <RiEyeOffLine
